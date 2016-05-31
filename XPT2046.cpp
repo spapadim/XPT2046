@@ -76,7 +76,8 @@ void XPT2046::begin(uint16_t width, uint16_t height) {
   // TODO(?) Use the following empirical calibration instead? -- Does it depend on VCC??
   // touch.setCalibration(209, 1759, 1775, 273);
 
-  SPI.begin();
+  // start SPI by LCD driver, not by touch
+  //SPI.begin();
 
   powerDown();  // Make sure PENIRQ is enabled
 }
@@ -116,6 +117,7 @@ void XPT2046::getRaw (uint16_t &vi, uint16_t &vj, adc_ref_t mode, uint8_t max_sa
 
   uint8_t ctrl_lo = ((mode == MODE_DFR) ? CTRL_LO_DFR : CTRL_LO_SER);
   
+  SPI.beginTransaction(SPISettings(16000000, MSBFIRST, SPI_MODE0));
   digitalWrite(_cs_pin, LOW);
   SPI.transfer(CTRL_HI_X | ctrl_lo);  // Send first control byte
   vi = _readLoop(CTRL_HI_X | ctrl_lo, max_samples);
@@ -130,6 +132,7 @@ void XPT2046::getRaw (uint16_t &vi, uint16_t &vj, adc_ref_t mode, uint8_t max_sa
   SPI.transfer16(0);  // Flush last read, just to be sure
   
   digitalWrite(_cs_pin, HIGH);
+  SPI.endTransaction();
 }
 
 void XPT2046::getPosition (uint16_t &x, uint16_t &y, adc_ref_t mode, uint8_t max_samples) const {
@@ -173,11 +176,13 @@ void XPT2046::getPosition (uint16_t &x, uint16_t &y, adc_ref_t mode, uint8_t max
 }
 
 void XPT2046::powerDown() const {
+  SPI.beginTransaction(SPISettings(16000000, MSBFIRST, SPI_MODE0));
   digitalWrite(_cs_pin, LOW);
   // Issue a throw-away read, with power-down enabled (PD{1,0} == 0b00)
   // Otherwise, ADC is disabled
   SPI.transfer(CTRL_HI_Y | CTRL_LO_SER);
   SPI.transfer16(0);  // Flush, just to be sure
   digitalWrite(_cs_pin, HIGH);
+  SPI.endTransaction();
 }
 
