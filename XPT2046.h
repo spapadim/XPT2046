@@ -1,3 +1,13 @@
+/*
+ * Copyright (c) 2015-2016  Spiros Papadimitriou
+ *
+ * This file is part of github.com/spapadim/XPT2046 and is released
+ * under the MIT License: https://opensource.org/licenses/MIT
+ *
+ * This software is distributed on an "AS IS" basis,
+ * WITHOUT WARRANTY OF ANY KIND, either express or implied.
+ */
+
 #ifndef _XPT2046_h_
 #define _XPT2046_h_
 
