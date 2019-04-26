@@ -53,7 +53,7 @@ private:
   uint8_t _cs_pin, _irq_pin;
 
   int32_t _cal_dx, _cal_dy, _cal_dvi, _cal_dvj;
-  uint16_t _cal_vi1, _cal_vj1;
+  int32_t _cal_vi1, _cal_vj1;
 
   uint16_t _readLoop(uint8_t ctrl, uint8_t max_samples) const;
 };
